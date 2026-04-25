@@ -1,5 +1,8 @@
 # tiny-claude-code
 
+![main](assets/README/image.png)
+
+
 A minimal, fully functional coding assistant CLI built from scratch — a simplified reimplementation of [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview).
 
 ---
