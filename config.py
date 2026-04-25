@@ -10,3 +10,7 @@ if os.getenv("ANTHROPIC_BASE_URL"):
 MODEL = os.environ.get("MODEL_ID", "claude-sonnet-4-6")
 WORKDIR = Path.cwd()
 MAX_TOKENS = 8000
+
+# Context compression
+TOKEN_THRESHOLD = 50_000          # auto-compact when estimated tokens exceed this
+TRANSCRIPT_DIR = WORKDIR / ".transcripts"

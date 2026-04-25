@@ -1,0 +1,13 @@
+# Environment & secrets
+.env
+
+# Runtime artifacts
+.transcripts/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# Editor
+.vscode/
+.idea/

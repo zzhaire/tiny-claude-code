@@ -12,12 +12,14 @@ except ImportError:
 
 
 def run_repl(model: str, workdir: str):
-    from ui import print_banner, prompt_symbol, print_error, print_token_usage
+    from ui import print_banner, prompt_symbol, print_error, print_token_usage, print_loaded_files
     from commands import handle_command
     from agent import agent_loop
+    from context import resolve_at_refs
 
     print_banner(model, workdir)
     history = []
+    state = {"active_skill": None, "plan": None}
     total_in = total_out = 0
 
     while True:
@@ -33,12 +35,24 @@ def run_repl(model: str, workdir: str):
 
         if user_input.startswith("/"):
             try:
-                if not handle_command(user_input, history):
+                if not handle_command(user_input, history, state):
                     print_error(f"unknown command: {user_input}\n")
             except SystemExit:
                 print("bye")
                 break
             continue
+
+        user_input, loaded = resolve_at_refs(user_input)
+        if loaded:
+            print_loaded_files(loaded)
+
+        # Prepend active skill prompt so the model follows the skill's instructions
+        active_skill = state.get("active_skill")
+        if active_skill:
+            from context import load_skill
+            skill = load_skill(active_skill)
+            if skill and skill.get("prompt"):
+                user_input = f"[Skill: {active_skill}]\n{skill['prompt']}\n\n---\n\n{user_input}"
 
         history.append({"role": "user", "content": user_input})
         response, usage = agent_loop(history)
